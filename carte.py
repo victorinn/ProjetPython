@@ -3,6 +3,15 @@ import numpy
 import folium
 import re
 import branca
+from zipfile import ZipFile
+
+
+file = "tableau-de-bord-mci-commune-techno.zip"
+#ouvrir le fichier zip en mode lecture
+with ZipFile(file,'r') as zip:
+        zip.printdir()
+        #extraire les fichiers
+        zip.extractall()
 
 #Préparation des données numeriques
 pop_data = pd.read_csv('tableau-de-bord-mci-commune-techno.csv', sep=';',header=1,encoding='latin-1',dtype={
