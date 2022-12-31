@@ -3,15 +3,6 @@ import numpy
 import folium
 import re
 import branca
-from zipfile import ZipFile
-
-
-file = "tableau-de-bord-mci-commune-techno.zip"
-#ouvrir le fichier zip en mode lecture
-with ZipFile(file,'r') as zip:
-        zip.printdir()
-        #extraire les fichiers
-        zip.extractall()
 
 #Préparation des données numeriques
 pop_data = pd.read_csv('tableau-de-bord-mci-commune-techno.csv', sep=';',header=1,encoding='latin-1',dtype={
@@ -45,7 +36,7 @@ for index, value in pl.loc[:34956].items():
 floatFibre = []
 for item in lFibre:
     if item == '-':
-        floatFibre.append(0)                       #Pour les zones non-renseignées , on met 0
+        floatFibre.append(0)                       #Pour les zones non-renseignées , on met -1 
     else:
         fItem = round((float(item)/100),3)
         floatFibre.append(fItem)
@@ -68,12 +59,12 @@ def carteCommuneChoroplethe():
             | ( dep_code.str.startswith('1') )
             | ( dep_code.str.startswith('2') )
             | ( dep_code.str.startswith('3') )
-            | ( dep_code.str.startswith('4') )
-            | ( dep_code.str.startswith('5') )
+            | ( dep_code.str.startswith('4') )      # Le masque est là pour permettre une modification facile de la map si on
+            | ( dep_code.str.startswith('5') )      # veut garder qu'une partie de la carte
             | ( dep_code.str.startswith('6') )
             | ( dep_code.str.startswith('7') )
             | ( dep_code.str.startswith('8') )
-            | ( dep_code.str.startswith('9') ))
+            | ( dep_code.str.startswith('9') ))      
     #filtrage par ligne
     pop_data = myDataFrame[mask]
     # print(pop_data)
@@ -81,7 +72,7 @@ def carteCommuneChoroplethe():
     coords = (48.7190835,2.4609723)
     map = folium.Map(location=coords, tiles='OpenStreetMap', zoom_start=7)
     folium.Choropleth(
-        geo_data='franceCommunes.geojson',                              # geographical data
+        geo_data='datagouv-communes.geojson',                              # geographical data
         name='choropleth',
         data=pop_data,                                  # numerical data
         columns=['code_insee', 'FibreByCommune'],                     # numerical data key/value pair
@@ -92,7 +83,7 @@ def carteCommuneChoroplethe():
         legend_name='Pourcentage fibre'
     ).add_to(map)
 
-    map.save(outfile='myMap.html')
+    map.save(outfile='myMapCommunale.html')
 
 def carteDepChoroplethe():
     # La colonne code_insee contient le code INSEE des communes:
@@ -116,7 +107,7 @@ def carteDepChoroplethe():
     coords = (48.7190835,2.4609723)
     map = folium.Map(location=coords, tiles='OpenStreetMap', zoom_start=7)
     folium.Choropleth(
-        geo_data='franceDep.geojson',                              # geographical data
+        geo_data='datagouv-departements.geojson',                              # geographical data
         name='choropleth',
         data=pop_data,                                  # numerical data
         columns=['code_dep', 'FibreByCommune'],                     # numerical data key/value pair
@@ -129,7 +120,7 @@ def carteDepChoroplethe():
 
     map.save(outfile='myMapDepartementale.html')
 
-carteCommuneChoroplethe()
-carteDepChoroplethe()          #Les deps se découpent en communes
+carteDepChoroplethe()          #Création d'une carte par département
+carteCommuneChoroplethe()      #Création d'une carte par communes pour plus de précision
 
   
