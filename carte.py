@@ -45,7 +45,7 @@ for index, value in pl.loc[:34956].items():
 floatFibre = []
 for item in lFibre:
     if item == '-':
-        floatFibre.append(-1)                       #Pour les zones non-renseignées , on met -1 
+        floatFibre.append(0)                       #Pour les zones non-renseignées , on met 0
     else:
         fItem = round((float(item)/100),3)
         floatFibre.append(fItem)
