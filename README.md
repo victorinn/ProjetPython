@@ -1,8 +1,8 @@
 # User Guide 
 Pour déployer ce projet, il vous faut : 
 - Copier le projet avec la commande ``` git clone adresse_publique_de_votre_projet ```
-- Télécharger les fichiers JSON nécéssaire. (car trop grand pour être incorporé dans GitHub)
 - Exécuter la commande ``` python -m pip install -r requirements.txt ``` pour installer les packages additionnels requis.
+- Télécharger les fichiers JSON nécéssaire. (car trop grand pour être incorporé dans GitHub) avec ``` python get_data.py ```
 - Exécuter la commande ``` python main.py ``` qui génèrera le dashboard. 
 # Rapport
 Le but de notre projet est de mettre en avant les installations Fibre des communes francaises. Selon le [ministere de l'économie des finances et de la souveraineté industrielle et numérique](https://www.economie.gouv.fr/cedef/date-deploiement-fibre-commune#:~:text=Les%20objectifs%20fix%C3%A9s%20par%20le,tous%20d'ici%20fin%202022.), l'objectif est que la haut débit disponible pour tous fin 2020 et le très haut débit, fin 2022.
@@ -12,14 +12,14 @@ En regardant communes par communes, on peut aussi s'apercevoir que la plus grand
 
 # Developper guide
 ## Fichier utilisés : 
-- [datagouv-communes.geojson](https://perso.esiee.fr/~courivad/python_advanced/_downloads/8578d763bdb7d7d0d1a7aaeb2e3b4814/datagouv-communes.geojson). Ce fichier était accessible directement depuis le cours à ce [lien](https://perso.esiee.fr/~courivad/python_advanced/chapters/02-geo.html).
+- [datagouv-communes.geojson](https://perso.esiee.fr/~courivad/python_advanced/_downloads/8578d763bdb7d7d0d1a7aaeb2e3b4814/datagouv-communes.geojson). Ce fichier était vient directement du cours à ce [lien](https://perso.esiee.fr/~courivad/python_advanced/chapters/02-geo.html).
 * [datagouv-departements.geojson](https://france-geojson.gregoiredavid.fr/).
 + [tableau-de-bord-mci-commune-techno.csv](https://france-geojson.gregoiredavid.fr/).
 
 ## Structure :
 Le projet est découpé en plusieurs fichiers python :
-- creationGeoJSON.py : 
-    - Ce fichier permet de créer les fichiers geojson en gardant les données qui nous interessent.
+- get_data.py : 
+    - Ce fichier permet de récuperer tous les fichiers dont on a besoin pour notre analyse.
 * carte.py :
     * Ce fichier permet de créer les 2 cartes traitant nos données. Pour créer cette carte il a fallu garder uniquement la colonne liée aux installations fibre et la colonne lié aux codes communes. 
         * Une carte choroplethe découpée en département est crée.
