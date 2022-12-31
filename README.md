@@ -1,6 +1,6 @@
 # User Guide 
 Pour déployer ce projet, il vous faut : 
-- Copier le projet avec la commande ``` git clone adresse_publique_de_votre_projet ```
+- Copier le projet avec la commande ``` git clone https://github.com/victorinn/ProjetPython.git ```
 - Exécuter la commande ``` python -m pip install -r requirements.txt ``` pour installer les packages additionnels requis.
 - Télécharger les fichiers JSON nécéssaire. (car trop grand pour être incorporé dans GitHub) avec ``` python get_data.py ```
 - Exécuter la commande ``` python main.py ``` qui génèrera le dashboard. 
