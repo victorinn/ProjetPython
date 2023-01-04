@@ -12,6 +12,7 @@ import pandas as pd
 import geopandas as gpd
 import ctypes
 from dash.dependencies import Input, Output
+import dash_daq as daq
 
 #
 # Data
@@ -62,8 +63,10 @@ if __name__ == '__main__':
                                 figure=fig
                             ), # (6)
 
-                            html.H1(children=f'Carte d\'installation fibre en France par département en 2022',
+                            html.H1(id="titreMap", children=f'Carte d\'installation fibre en France par département en 2022',
                                         style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
+                            
+                            daq.ToggleSwitch(id="switch-map", value=False),
 
                             html.Div(children=[
                                 html.Iframe(id='mapDepartementale', srcDoc=open('myMapDepartementale.html', 'r').read())
@@ -71,10 +74,27 @@ if __name__ == '__main__':
     ]
     )
 
-    @app.callback(Output('titre', 'value'), Input('dropdown-departement', 'value'),)
+    #Modification du graphe selon le département sélectionné
+    @app.callback(Output('titre', 'children'), Input('dropdown-departement', 'value'),)
     def changeGraph(value):
-        ctypes.cast("titre", ctypes.py_object).value = 'Bye Bye World!'
-        return value
+
+        return f'Pourcentage d\'installation fibre en '+ value +' en 2022'
+
+    #Modification de la carte selon le mode d'affichage sélectionné
+    @app.callback(Output('mapDepartementale', 'srcDoc'), Input('switch-map', 'value'))
+    def on_tick(value):
+        if value == False:
+            return open('myMapCommunale.html', 'r').read()
+        elif value == True:
+            return open('myMapDepartementale.html', 'r').read()
+
+    #Modification du titre de la carte affichée
+    @app.callback(Output('titreMap', 'children'), Input('switch-map', 'value'))
+    def on_tick(value):
+        if value == False:
+            return f'Carte d\'installation fibre en France par commune en 2022'
+        elif value == True:
+            return f'Carte d\'installation fibre en France par département en 2022'
 
     #
     # RUN APP
