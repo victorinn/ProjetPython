@@ -33,10 +33,7 @@ for depData in franceDep["nom"]:
 listDep.sort()
 
 
-# year = 2002
-# gapminder = px.data.gapminder() # (1)
-# years = gapminder["year"].unique()
-# data = { year:gapminder.query("year == @year") for year in years} # (2)
+
 data = carte.myDataFrame
 
 
@@ -47,15 +44,15 @@ data = carte.myDataFrame
 if __name__ == '__main__':
 
     app = dash.Dash(__name__) # (3)
-    
-    
-    # fig = px.bar(data, x= 'FibreByCommune', y='FibreByCommune')
+    dataDep = data[data['code_dep'] == '65']
+    # print(dataDep)
+    fig = px.bar(dataDep, x= 'Commune', y='FibreByCommune')
 
 
-    fig = px.scatter(data, x="FibreByCommune", y="FibreByCommune",
-                        color= "code_dep",
-                        size="FibreByCommune",
-                        hover_name="FibreByCommune") # (4)
+    # fig = px.scatter(data, x="FibreByCommune", y="FibreByCommune",
+    #                     color= "code_dep",
+    #                     size="FibreByCommune",
+    #                     hover_name="FibreByCommune") # (4)
 
     app.layout = html.Div(children=[
 
@@ -70,7 +67,7 @@ if __name__ == '__main__':
                                 figure=fig
                             ), # (6)
 
-                            html.H1(children=f'Carte d\'installation fibre en France par département en 2022',
+                            html.H1(id= 'titreMap', children=f'Carte d\'installation fibre en France par département en 2022',
                                         style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
 
                             daq.ToggleSwitch(id="switch-map", value=True),
@@ -87,7 +84,15 @@ if __name__ == '__main__':
     def changeGraph(value):
 
         return f'Pourcentage d\'installation fibre en '+ value +' en 2022'
-
+    
+    #Modification du titre de la carte affichée
+    @app.callback(Output('titreMap', 'children'), Input('switch-map', 'value'))
+    def on_tick(value):
+        if value == False:
+            return f'Carte d\'installation fibre en France par commune en 2022'
+        elif value == True:
+            return f'Carte d\'installation fibre en France par département en 2022'
+    
     #Modification de la carte selon le mode d'affichage sélectionné
     @app.callback(Output('mapDepartementale', 'srcDoc'), Input('switch-map', 'value'))
     def on_tick(value):
@@ -96,13 +101,7 @@ if __name__ == '__main__':
         elif value == True:
             return open('myMapDepartementale.html', 'r').read()
 
-    #Modification du titre de la carte affichée
-    @app.callback(Output('titreMap', 'children'), Input('switch-map', 'value'))
-    def on_tick(value):
-        if value == False:
-            return f'Carte d\'installation fibre en France par commune en 2022'
-        elif value == True:
-            return f'Carte d\'installation fibre en France par département en 2022'
+    
     #
     # RUN APP
     #
