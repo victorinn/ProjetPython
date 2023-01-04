@@ -10,9 +10,9 @@ from dash import dcc
 from dash import html
 import pandas as pd
 import geopandas as gpd
-import ctypes
 from dash.dependencies import Input, Output
 import dash_daq as daq
+import carte
 
 #
 # Data
@@ -33,10 +33,12 @@ for depData in franceDep["nom"]:
 listDep.sort()
 
 
-year = 2002
-gapminder = px.data.gapminder() # (1)
-years = gapminder["year"].unique()
-data = { year:gapminder.query("year == @year") for year in years} # (2)
+# year = 2002
+# gapminder = px.data.gapminder() # (1)
+# years = gapminder["year"].unique()
+# data = { year:gapminder.query("year == @year") for year in years} # (2)
+data = carte.myDataFrame
+
 
 #
 # Main
@@ -45,36 +47,42 @@ data = { year:gapminder.query("year == @year") for year in years} # (2)
 if __name__ == '__main__':
 
     app = dash.Dash(__name__) # (3)
+    
+    
+    # fig = px.bar(data, x= 'FibreByCommune', y='FibreByCommune')
 
-    fig = px.scatter(data[year], x="gdpPercap", y="lifeExp",
-                        color="continent",
-                        size="pop",
-                        hover_name="country") # (4)
+
+    fig = px.scatter(data, x="FibreByCommune", y="FibreByCommune",
+                        color= "code_dep",
+                        size="FibreByCommune",
+                        hover_name="FibreByCommune") # (4)
 
     app.layout = html.Div(children=[
 
                             html.H1(id="titre", children=f'Pourcentage d\'installation fibre par département en 2022',
                                         style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
 
-                            dcc.Dropdown(options=listDep, value=listDep[0], id='dropdown-departement'),
+                            dcc.Dropdown(listDep, listDep[0], id='dropdown-departement', #onChange=changeGraph()),
+                            ),
 
                             dcc.Graph(
                                 id='graph1',
                                 figure=fig
                             ), # (6)
 
-                            html.H1(id="titreMap", children=f'Carte d\'installation fibre en France par département en 2022',
+                            html.H1(children=f'Carte d\'installation fibre en France par département en 2022',
                                         style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
-                            
-                            daq.ToggleSwitch(id="switch-map", value=False),
+
+                            daq.ToggleSwitch(id="switch-map", value=True),
 
                             html.Div(children=[
-                                html.Iframe(id='mapDepartementale', srcDoc=open('myMapDepartementale.html', 'r').read())
-                            ], style={'width': '100%', 'height': '50vh', 'margin': "0px", "display": "block"}),          
+                                html.Iframe(id='mapDepartementale', srcDoc=open('myMapDepartementale.html', 'r').read(),
+                                style={'width': '100%', 'height': '50vh', 'margin': "0px", "display": "block"})
+                            ]),
     ]
     )
 
-    #Modification du graphe selon le département sélectionné
+ #Modification du graphe selon le département sélectionné
     @app.callback(Output('titre', 'children'), Input('dropdown-departement', 'value'),)
     def changeGraph(value):
 
@@ -95,15 +103,8 @@ if __name__ == '__main__':
             return f'Carte d\'installation fibre en France par commune en 2022'
         elif value == True:
             return f'Carte d\'installation fibre en France par département en 2022'
-
     #
     # RUN APP
     #
 
     app.run_server(debug=False) # (8)
-
-
-
-
-
-   
