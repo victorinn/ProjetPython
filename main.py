@@ -8,10 +8,10 @@ import plotly_express as px
 import dash
 from dash import dcc
 from dash import html
-import dash_leaflet as dl
 import pandas as pd
 import geopandas as gpd
-import carte
+import ctypes
+from dash.dependencies import Input, Output
 
 #
 # Data
@@ -41,15 +41,6 @@ data = { year:gapminder.query("year == @year") for year in years} # (2)
 # Main
 #
 
-# def changeGraph():
-#     import ctypes
-#     a = "Hello World!"
-#     py_obj = ctypes.cast(id(a), ctypes.py_object)
-#     id(py_obj.value) # 1868526529136
-#     py_obj.value = 'Bye Bye World!'
-#     # Here we can see that `value` now points to a new object
-#     id(py_obj.value) # 1868528280112
-
 if __name__ == '__main__':
 
     app = dash.Dash(__name__) # (3)
@@ -64,8 +55,7 @@ if __name__ == '__main__':
                             html.H1(id="titre", children=f'Pourcentage d\'installation fibre par département en 2022',
                                         style={'textAlign': 'center', 'color': '#7FDBFF'}), # (5)
 
-                            dcc.Dropdown(listDep, listDep[0], id='dropdown-departement', #onChange=changeGraph()),
-                            ),
+                            dcc.Dropdown(options=listDep, value=listDep[0], id='dropdown-departement'),
 
                             dcc.Graph(
                                 id='graph1',
@@ -77,9 +67,14 @@ if __name__ == '__main__':
 
                             html.Div(children=[
                                 html.Iframe(id='mapDepartementale', srcDoc=open('myMapDepartementale.html', 'r').read())
-                            ], style={'width': '100%', 'height': '50vh', 'margin': "auto", "display": "block"}),          
+                            ], style={'width': '100%', 'height': '50vh', 'margin': "0px", "display": "block"}),          
     ]
     )
+
+    @app.callback(Output('titre', 'value'), Input('dropdown-departement', 'value'),)
+    def changeGraph(value):
+        ctypes.cast("titre", ctypes.py_object).value = 'Bye Bye World!'
+        return value
 
     #
     # RUN APP
