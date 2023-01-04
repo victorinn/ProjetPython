@@ -20,12 +20,12 @@ import carte
 
 #Récupération des noms de département pour la liste déroulante
 franceDep = gpd.read_file('datagouv-departements.geojson')
-print(franceDep["nom"].head())
+print(franceDep["code"].head())
 
 listDep = []
-listDep.append(franceDep["nom"][0])
+listDep.append(franceDep["code"][0])
 
-for depData in franceDep["nom"]:
+for depData in franceDep["code"]:
     if not pd.isna(depData):
         if depData not in listDep:
             listDep.append(depData)
@@ -44,7 +44,7 @@ data = carte.myDataFrame
 if __name__ == '__main__':
 
     app = dash.Dash(__name__) # (3)
-    dataDep = data[data['code_dep'] == '65']
+    dataDep = data[data['code_dep'] == '01']
     # print(dataDep)
     fig = px.bar(dataDep, x= 'Commune', y='FibreByCommune')
 
@@ -82,6 +82,13 @@ if __name__ == '__main__':
  #Modification du graphe selon le département sélectionné
     @app.callback(Output('titre', 'children'), Input('dropdown-departement', 'value'),)
     def changeGraph(value):
+        dataDep = data[data['code_dep'] == str(value)]
+
+        
+        # print(dataDep)
+        fig = px.bar(dataDep, x= 'Commune', y='FibreByCommune')
+            
+
 
         return f'Pourcentage d\'installation fibre en '+ value +' en 2022'
     
