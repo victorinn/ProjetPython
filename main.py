@@ -80,17 +80,13 @@ if __name__ == '__main__':
     )
 
  #Modification du graphe selon le département sélectionné
-    @app.callback(Output('titre', 'children'), Input('dropdown-departement', 'value'),)
+    @app.callback(Output('graph1', 'figure'), Input('dropdown-departement', 'value'),)
     def changeGraph(value):
-        dataDep = data[data['code_dep'] == str(value)]
-
-        
+        dataDep = data[data['code_dep'] == str(value)]      
         # print(dataDep)
         fig = px.bar(dataDep, x= 'Commune', y='FibreByCommune')
             
-
-
-        return f'Pourcentage d\'installation fibre en '+ value +' en 2022'
+        return fig
     
     #Modification du titre de la carte affichée
     @app.callback(Output('titreMap', 'children'), Input('switch-map', 'value'))
