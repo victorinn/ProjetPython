@@ -87,6 +87,11 @@ if __name__ == '__main__':
         fig = px.bar(dataDep, x= 'Commune', y='FibreByCommune')
             
         return fig
+
+    @app.callback(Output('titre', 'children'), Input('dropdown-departement', 'value'),)
+    def changeGraphTitle(value):
+            
+        return f'Pourcentage d\'installation fibre en '+ value +' en 2022'
     
     #Modification du titre de la carte affichée
     @app.callback(Output('titreMap', 'children'), Input('switch-map', 'value'))
